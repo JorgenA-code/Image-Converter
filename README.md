@@ -1,3 +1,17 @@
+#window avaneb
+#Seleclt folder / select files
+# if folder kuidagi ainult teatud file extensionid
+#milline compresser muutja kinda
+#kas jätta alles originaalid
+# do the thing button
+
+
+
+
+
+
+
+
 Notes
 
 
