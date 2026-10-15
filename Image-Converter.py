@@ -26,3 +26,4 @@ dont = tk.Label(root, text='Text test', anchor="center",
 dont.place(x=0, y=330, height=120, width=200,)
 
 root.mainloop()  # Keeps window open
+#123123
