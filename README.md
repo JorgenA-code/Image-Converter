@@ -1,207 +1,90 @@
-#window avaneb
-#Seleclt folder / select files
-# if folder kuidagi ainult teatud file extensionid
-#milline compresser muutja kinda
-#kas jätta alles originaalid
-# do the thing button
+Üldine workflow
 
-
-
-
-
-
-
-
-Notes
-
-
-.heic
-
-Photos saved by iPhones
-
-Very common on Apple devices
-
-.heif
-
-High-efficiency photos
-
-Common in supported devices
-
-.dng
-
-RAW photos from phones
-
-Used for professional photography
-
-.jpg / .jpeg
-
-Standard photos
-
-Extremely common across phones
-
-.webp
-
-Images saved or downloaded from apps and websites
-
-Common
-
-.avif
-
-Modern compressed images
-
-Growing adoption
-
-.gif
-
-Animated images
-
-Common for animations, not regular photos
-
- Commonly used by websites to save space
-Extension
-
-Compression
-
-Typical use
-
-.webp
-
-Excellent
-
-Website photos, thumbnails, graphics
-
-.avif
-
-Often better than WebP
-
-High-quality images at smaller sizes
-
-.jxl
-
-Excellent
-
-Modern image compression, but limited browser adoption
-
-.jpg / .jpeg
-
-Good
-
-Photos and older websites
-
-.gif
-
-Poor for photographs
-
-Simple animations
-
-.svg
-
-Very small for simple graphics
-
-Logos, icons, diagrams
-
-.heic / .heif
-
-Excellent
-
-Mostly device photos, less common on websites
-
-.jp2
-
-
-
-
-
-
-
+Kasutaja avad programmi
+Programm küsib millised failid avades akna
+Programmis on juba valitud "keep originals" aga seda saab muuta
+Kasutaja valib kas png või jpg ja kui palju compressiooni
+Kasutaja vajutab "convert" nuppu
+Programm teeb töö ära ja kasutaja saab programmi sulgeda
 
 
 Common image formats
-.gif — Animated or static images
 
-.bmp — Bitmap image
+.jpg / .jpeg - Standard photos
 
-.tiff / .tif — High-quality images, often used in printing
+.png - Lossless images with transparency
 
-.heic — High-efficiency images used by Apple devices
+.webp - Web and app images
 
-.heif — High-efficiency image format
+.avif - Highly compressed modern images
 
-.jxl — JPEG XL, a modern image format
+.gif - Simple animations
 
-.jp2 — JPEG 2000
+.bmp - Uncompressed bitmap images
 
-.j2k — JPEG 2000 codestream
+.tiff / .tif - High-quality images and printing
 
-.apng — Animated PNG
+.apng - Animated PNG images
 
-.ico — Icons, commonly used for website favicons
+.svg - Vector graphics, logos, and icons
 
-.cur — Cursor images
+.ico - Website icons
 
-Modern and web-focused formats
-.svg — Scalable vector graphics
+.jfif - JPEG image format variant
+High-efficiency and modern formats
 
-.jfif — JPEG File Interchange Format
+.heic / .heif - Efficient photos, common on Apple devices
 
-.jng — JPEG Network Graphics
+.jxl - Modern, efficient image compression
 
-.qoi — Quite OK Image format
+.jp2 / .j2k - JPEG 2000 images
 
-.exr — High-dynamic-range images
+.qoi - Simple, fast image compression
 
-.hdr — High-dynamic-range image files
-
-.ktx / .ktx2 — Textures, often used in graphics and games
-
-.dds — DirectDraw Surface textures, commonly used in games
-
-.basis — Compressed GPU texture format
-
+.jng - JPEG Network Graphics
 RAW photography formats
-.raw — Generic camera RAW image
 
-.dng — Digital Negative RAW format
+.raw - Generic camera RAW image
 
-.cr2 / .cr3 — Canon RAW
+.dng - Digital Negative RAW photos
 
-.nef — Nikon RAW
+.cr2 / .cr3 - Canon RAW photos
 
-.arw — Sony RAW
+.nef - Nikon RAW photos
 
-.orf — Olympus RAW
+.arw - Sony RAW photos
 
-.rw2 — Panasonic RAW
+.orf - OM System/Olympus RAW photos
 
-.raf — Fujifilm RAW
+.rw2 - Panasonic RAW photos
 
-.pef — Pentax RAW
+.raf - Fujifilm RAW photos
 
-Older, niche, or specialized formats
-.tga — Truevision TGA, used in games and graphics
+.pef - Pentax RAW photos
+Graphics, textures, and specialized formats
 
-.pcx — Older raster image format
+.exr - High-dynamic-range images
 
-.iff / .ilbm — Interchange File Format images
+.hdr - High-dynamic-range image files
 
-.sgi — Silicon Graphics image
+.ktx / .ktx2 - Graphics and game textures
 
-.ras — Sun Raster image
+.dds - Game textures
 
-.pbm — Portable Bitmap
+.basis - Compressed GPU textures
 
-.pgm — Portable Graymap
+.tga - Game and graphics images
 
-.ppm — Portable Pixmap
+.pcx - Older raster images
 
-.pnm — Portable Anymap
+.iff / .ilbm - Interchange image formats
 
-.xbm — X Bitmap
+.sgi - Silicon Graphics images
 
-.xpm — X Pixmap
+.ras - Sun Raster images
 
-.jxl — JPEG XL
+.pbm / .pgm / .ppm / .pnm - Portable bitmap and pixel formats
 
-.wmf — Windows Metafile
+.xbm / .xpm - Older bitmap and color icon formats
 
-.emf — Enhanced Metafile
+.cur - Cursor images
