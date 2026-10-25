@@ -1,4 +1,4 @@
-
+# Kui on tahe lisada fail tüüpe, pane reale ~12 "SUPPORTED_INPUTS" ja ~73-76 filetypes=[
 #install https://pillow.readthedocs.io/en/stable/
 import shutil
 import threading
