@@ -1,3 +1,13 @@
+# TESTIMATTA # TESTIMATTA # TESTIMATTA 
+# TESTIMATTA # TESTIMATTA # TESTIMATTA 
+# TESTIMATTA # TESTIMATTA # TESTIMATTA 
+# TESTIMATTA # TESTIMATTA # TESTIMATTA 
+# Võib tekkida probleeme, eriti kui kaks sama nimega faili eksisteerivad ja see overwritib
+
+
+
+
+
 # Kui on tahe lisada fail tüüpe, pane reale ~12 "SUPPORTED_INPUTS" ja ~73-76 filetypes=[
 #install https://pillow.readthedocs.io/en/stable/
 import shutil
