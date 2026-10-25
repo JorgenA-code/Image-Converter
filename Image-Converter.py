@@ -1,10 +1,10 @@
 """
 Image Converter
 
-Converts selected images to PNG while preserving supported metadata.
-Original files can be moved to an "originals" folder or deleted.
+Converts supported images to PNG and preserves supported metadata.
+Originals can be moved to an "originals" folder or deleted.
 
-To add file types, edit SUPPORTED_FORMATS below.
+Edit SUPPORTED_EXTENSIONS to change input formats.
 Requires Pillow: https://pillow.readthedocs.io/en/stable/
 """
 
@@ -15,11 +15,9 @@ from PIL import Image, PngImagePlugin
 import shutil
 
 
-# EDIT HERE (1): Add or remove supported input file extensions.
-# Format: file extension -> Pillow format name.
-SUPPORTED_FORMATS = {
-    ".webp": "WEBP",
-    ".avif": "AVIF",
+# EDIT HERE (1): Supported input formats.
+SUPPORTED_EXTENSIONS = {
+    ".webp", ".jpg", ".jpeg", ".bmp", ".tiff", ".tif"
 }
 
 root = tk.Tk()
@@ -36,15 +34,11 @@ status = tk.StringVar(value="No files selected")
 def select_files():
     global selected_files
 
-    # EDIT HERE (2): The file picker updates automatically
-    # when you change SUPPORTED_FORMATS above.
-    extensions = " ".join(f"*{ext}" for ext in SUPPORTED_FORMATS)
+    extensions = " ".join(f"*{ext}" for ext in sorted(SUPPORTED_EXTENSIONS))
     selected_files = list(filedialog.askopenfilenames(
         title="Select images",
-        filetypes=[("Supported images", extensions),
-                   ("All files", "*.*")]
+        filetypes=[("Supported images", extensions)]
     ))
-
     status.set(f"{len(selected_files)} file(s) selected")
 
 
@@ -53,14 +47,15 @@ def convert():
         status.set("Select files first!")
         return
 
-    converted = 0
-    skipped = 0
+    converted = skipped = failed = 0
 
     for file in selected_files:
         source = Path(file)
         destination = source.with_suffix(".png")
+        created_destination = False
+        png_saved = False
 
-        # EDIT HERE (3): Skip existing PNGs to prevent overwriting.
+        # EDIT HERE (2): Never overwrite an existing PNG.
         if destination.exists():
             print(f"Skipping {source.name}: PNG already exists.")
             skipped += 1
@@ -90,14 +85,19 @@ def convert():
                     if key in info
                 })
 
-                img.save(destination, format="PNG", **options)
+                # "xb" creates a new file and refuses to overwrite an existing one.
+                with destination.open("xb") as output:
+                    created_destination = True
+                    img.save(output, format="PNG", **options)
+
+                png_saved = True
 
             if keep_original.get():
                 originals = source.parent / "originals"
                 originals.mkdir(exist_ok=True)
                 target = originals / source.name
-
                 counter = 1
+
                 while target.exists():
                     target = originals / f"{source.stem}_{counter}{source.suffix}"
                     counter += 1
@@ -108,10 +108,24 @@ def convert():
 
             converted += 1
 
-        except Exception as e:
-            print(f"Error converting {source.name}: {e}")
+        except FileExistsError:
+            print(f"Skipping {source.name}: PNG already exists.")
+            skipped += 1
 
-    status.set(f"Converted {converted}, skipped {skipped}")
+        except Exception as e:
+            print(f"Error processing {source.name}: {e}")
+            failed += 1
+
+            # Remove an incomplete PNG, but keep a successfully saved one.
+            if created_destination and not png_saved:
+                destination.unlink(missing_ok=True)
+
+        # A successfully saved PNG is retained if moving/deleting the
+        # original fails, so the converted image is not lost.
+
+    status.set(
+        f"Done: {converted} converted, {skipped} skipped, {failed} failed"
+    )
     selected_files.clear()
 
 
