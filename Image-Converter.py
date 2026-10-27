@@ -22,7 +22,7 @@ SUPPORTED_EXTENSIONS = {
 
 root = tk.Tk()
 root.title("Image to PNG")
-root.geometry("320x210")
+root.geometry("320x230")
 root.resizable(False, False)
 root.configure(bg="#181818")
 
@@ -178,5 +178,13 @@ tk.Label(
     fg="#BBBBBB",
     wraplength=300
 ).pack(pady=5)
+
+tk.Label(
+    root,
+    text=f"Supported formats: {', '.join(sorted(SUPPORTED_EXTENSIONS))}",
+    bg="#181818",
+    fg="#BBBBBB",
+    wraplength=300
+).pack(pady=2)
 
 root.mainloop()
