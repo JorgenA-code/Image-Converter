@@ -21,7 +21,7 @@ SUPPORTED_EXTENSIONS = {
 }
 
 root = tk.Tk()
-root.title("Image to PNG")
+root.title("Image Converter")
 root.geometry("320x230")
 root.resizable(False, False)
 root.configure(bg="#181818")
