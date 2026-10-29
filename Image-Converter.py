@@ -1,30 +1,28 @@
+
 """
-Image Converter
+Pildi teisendaja.
 
-Converts selected images to PNG while preserving supported metadata.
-Original files can be moved to an "originals" folder or deleted.
+Teisendab valitud pildid PNG-vormingusse ja säilitab toetatud metaandmed.
+Originaalfailid saab alles jätta eraldi kausta või kustutada.
 
-To add file types, edit SUPPORTED_FORMATS below.
-Requires Pillow: https://pillow.readthedocs.io/en/stable/
+Vajab Pillow paketti: https://pillow.readthedocs.io/en/stable/
 """
 
-import tkinter as tk
-from tkinter import filedialog
-from pathlib import Path
-from PIL import Image, PngImagePlugin
 import shutil
+import tkinter as tk
+from pathlib import Path
+from tkinter import filedialog
+from PIL import Image, PngImagePlugin
 
 
-# EDIT HERE (1): Add or remove supported input file extensions.
-# Format: file extension -> Pillow format name.
-SUPPORTED_FORMATS = {
-    ".webp": "WEBP",
-    ".avif": "AVIF",
+# Faililaiendite lisamine ja muutmine
+SUPPORTED_EXTENSIONS = {
+    ".webp", ".jpg", ".jpeg", ".bmp", ".tiff", ".tif"
 }
 
 root = tk.Tk()
-root.title("Image to PNG")
-root.geometry("300x210")
+root.title("Image Converter")
+root.geometry("320x230")
 root.resizable(False, False)
 root.configure(bg="#181818")
 
@@ -34,17 +32,19 @@ status = tk.StringVar(value="No files selected")
 
 
 def select_files():
-    global selected_files
-
-    # EDIT HERE (2): The file picker updates automatically
-    # when you change SUPPORTED_FORMATS above.
-    extensions = " ".join(f"*{ext}" for ext in SUPPORTED_FORMATS)
-    selected_files = list(filedialog.askopenfilenames(
+    files = filedialog.askopenfilenames(
         title="Select images",
-        filetypes=[("Supported images", extensions),
-                   ("All files", "*.*")]
-    ))
+        filetypes=[
+            (
+                "Supported images",
+                " ".join(f"*{ext}" for ext in sorted(SUPPORTED_EXTENSIONS))
+            ),
+            ("All files", "*.*")
+        ]
+    )
 
+    selected_files.clear()
+    selected_files.extend(files)
     status.set(f"{len(selected_files)} file(s) selected")
 
 
@@ -53,18 +53,13 @@ def convert():
         status.set("Select files first!")
         return
 
-    converted = 0
-    skipped = 0
+    converted = skipped = failed = 0
 
     for file in selected_files:
         source = Path(file)
         destination = source.with_suffix(".png")
-
-        # EDIT HERE (3): Skip existing PNGs to prevent overwriting.
-        if destination.exists():
-            print(f"Skipping {source.name}: PNG already exists.")
-            skipped += 1
-            continue
+        created_destination = False
+        png_saved = False
 
         try:
             with Image.open(source) as img:
@@ -72,8 +67,10 @@ def convert():
                 info = img.info
                 metadata = PngImagePlugin.PngInfo()
 
-                for key in ("Title", "Author", "Description",
-                            "Copyright", "Comment"):
+                for key in (
+                    "Title", "Author", "Description",
+                    "Copyright", "Comment"
+                ):
                     if key in info:
                         metadata.add_text(key, str(info[key]))
 
@@ -83,23 +80,30 @@ def convert():
                         xmp = xmp.decode("utf-8", errors="replace")
                     metadata.add_itxt("XML:com.adobe.xmp", xmp)
 
-                options = {"pnginfo": metadata}
-                options.update({
+                options = {
                     key: info[key]
                     for key in ("exif", "icc_profile", "dpi")
                     if key in info
-                })
+                }
+                options["pnginfo"] = metadata
 
-                img.save(destination, format="PNG", **options)
+                with destination.open("xb") as output:
+                    created_destination = True
+                    img.save(output, format="PNG", **options)
+
+                png_saved = True
 
             if keep_original.get():
                 originals = source.parent / "originals"
                 originals.mkdir(exist_ok=True)
-                target = originals / source.name
 
+                target = originals / source.name
                 counter = 1
+
                 while target.exists():
-                    target = originals / f"{source.stem}_{counter}{source.suffix}"
+                    target = originals / (
+                        f"{source.stem}_{counter}{source.suffix}"
+                    )
                     counter += 1
 
                 shutil.move(str(source), str(target))
@@ -108,39 +112,79 @@ def convert():
 
             converted += 1
 
-        except Exception as e:
-            print(f"Error converting {source.name}: {e}")
+        except FileExistsError:
+            print(f"Skipping {source.name}: PNG already exists.")
+            skipped += 1
 
-    status.set(f"Converted {converted}, skipped {skipped}")
+        except Exception as error:
+            print(f"Error processing {source.name}: {error}")
+            failed += 1
+
+            if created_destination and not png_saved:
+                destination.unlink(missing_ok=True)
+
+    status.set(
+        f"Done: {converted} converted, "
+        f"{skipped} skipped, {failed} failed"
+    )
     selected_files.clear()
 
 
 tk.Label(
-    root, text="Image → PNG", font=("Arial", 16, "bold"),
-    bg="#181818", fg="white"
+    root,
+    text="Image → PNG",
+    font=("Arial", 16, "bold"),
+    bg="#181818",
+    fg="white"
 ).pack(pady=(15, 8))
 
 tk.Checkbutton(
-    root, text="Keep original files", variable=keep_original,
-    bg="#181818", fg="white", selectcolor="#303030",
-    activebackground="#181818", activeforeground="white"
+    root,
+    text="Keep original files",
+    variable=keep_original,
+    bg="#181818",
+    fg="white",
+    selectcolor="#303030",
+    activebackground="#181818",
+    activeforeground="white"
 ).pack()
 
 tk.Button(
-    root, text="1. Select files", command=select_files,
-    bg="#303030", fg="white", relief="flat",
-    width=20, pady=5
+    root,
+    text="1. Select files",
+    command=select_files,
+    bg="#303030",
+    fg="white",
+    relief="flat",
+    width=22,
+    pady=5
 ).pack(pady=(8, 4))
 
 tk.Button(
-    root, text="2. Convert to PNG", command=convert,
-    bg="#5278E8", fg="white", relief="flat",
-    width=20, pady=5
+    root,
+    text="2. Convert to PNG",
+    command=convert,
+    bg="#5278E8",
+    fg="white",
+    relief="flat",
+    width=22,
+    pady=5
 ).pack(pady=4)
 
 tk.Label(
-    root, textvariable=status, bg="#181818", fg="#BBBBBB",
-    wraplength=280
+    root,
+    textvariable=status,
+    bg="#181818",
+    fg="#BBBBBB",
+    wraplength=300
 ).pack(pady=5)
+
+tk.Label(
+    root,
+    text=f"Supported formats: {', '.join(sorted(SUPPORTED_EXTENSIONS))}",
+    bg="#181818",
+    fg="#BBBBBB",
+    wraplength=300
+).pack(pady=2)
 
 root.mainloop()
