@@ -12,3 +12,4 @@ Kasutaja vajutab "convert" nuppu
 
 Programm teeb töö ära ja kasutaja saab programmi sulgeda
 
+SUUREPÄRASELT TEHTUD!
